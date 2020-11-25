@@ -1,45 +1,51 @@
 <template>
   <div class="container">
-    <Covid
+    <CovidPaises
       v-if="loaded"
       :chartdata="chartdata"
+      :options="options"/>
+    <CovidPaises
+      v-if="loaded"
+      :chartdata="chartdata2"
       :options="options"/>
   </div>
 </template>
 
 <script>
 import axios from 'axios';
-import moment from "moment";
 
-import Covid from '../charts/Covid.vue' 
+import CovidPaises from '../charts/CovidPaises.vue' 
 
 export default {
   name: 'AreaChartContainer',
   components: { 
-    Covid 
+    CovidPaises
   },
   data: () => ({
     loaded: false,
     chartdata: null,
-    options: null
+    chartdata2: null,
+    options: null,
   }),
-
   async mounted () {
     this.loaded = false
     try {
-        const { data } = await axios.get('https://api.covidtracking.com/v1/us/daily.json')
+        const { data } = await axios.get('https://covid19-brazil-api.now.sh/api/report/v1/countries')
 
-        let positivos = data.map(function(e){
-            return e.positive
-        }).reverse()
+        let paises = data.data.map(function(e){
+            return e.country
+        })
 
-        let datas = data.map(function(e){
-            e = moment(e.date, "YYYYMMDD").format("DD/MM");
-            return e
-        }).reverse()
+        let casos = data.data.map(function(e){
+            return e.cases
+        })
 
+        let mortes = data.data.map(function(e){
+            return e.deaths
+        })
+        
         this.chartdata = {
-            labels: datas,
+            labels: paises,
             datasets: [
             {
                 label: 'Casos Positivos',
@@ -48,10 +54,26 @@ export default {
                 pointBackgroundColor: "#858EAB",
                 borderColor: '#251F47',
                 borderWidth: 1,
-                data: positivos
+                data: casos
             },
             ]
         }
+        
+        this.chartdata2 = {
+            labels: paises,
+            datasets: [
+            {
+                label: 'Mortes',
+                backgroundColor: '#FD4659',
+                pointBorderColor: "#4A0100",
+                pointBackgroundColor: "#FD4659",
+                borderColor: '#4A0100',
+                borderWidth: 1,
+                data: mortes
+            },
+            ]
+        }
+
         this.options = {
             responsive: true,
             maintainAspectRatio: false,

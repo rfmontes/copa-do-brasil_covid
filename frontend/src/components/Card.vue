@@ -4,10 +4,10 @@
         <div>
             <b-card-group deck>
                 <li class="lista mr-3" v-for="c in times" :key="c.id">
-                    <div class="card border-primary mb-3 text-center" style="width: 12rem;">
+                    <div class="card mb-3 text-center" style="width: 12rem; border-color: #044A05;">
                         <div class="card-header" style="font-size: 25px;">{{ c.nome_time }}</div>
                         <div class="card-body text-primary">
-                            <b-button variant='info' class="ml-2 mb-2" @click="votar(c)">Votar</b-button>
+                            <b-button variant="success" class="ml-2 mb-2" @click="votar(c)">Votar</b-button>
                         </div>
                     </div>
                 </li>
